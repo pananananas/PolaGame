@@ -30,6 +30,14 @@
   background: linear-gradient(to bottom, #10b981, #dcfce7) !important; /* emerald-500 to green-100 */
 }
 
+.pet-bg-frog {
+  background: linear-gradient(to bottom, #ecfccb, #dcfce7) !important; /* green-400 to lime-100 */
+}
+
+.pet-bg-snail {
+  background: linear-gradient(to bottom, #E6D6FF, #fff7ed) !important; /* amber-200 to orange-50 */
+}
+
 /* Custom styling for Sonner toast notifications */
 .game-toast {
   animation: toast-pop-up 0.3s ease-out forwards !important;

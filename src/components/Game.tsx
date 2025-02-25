@@ -477,8 +477,12 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
   // Handle touch/click controls
   const handleTouchStart = useCallback((e: React.TouchEvent | React.MouseEvent) => {
     e.preventDefault(); // Prevent default to avoid double firing on mobile
+    
+    // Don't process clicks/touches at all when game is over
+    if (gameOver) return;
+    
     handleJump();
-  }, [handleJump]);
+  }, [handleJump, gameOver]);
 
   // Generate gradient classes for custom pet background
   const bgGradientClasses = getGradientClasses(pet.backgroundColor.from, pet.backgroundColor.to);
@@ -498,8 +502,8 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
       {/* Game area with pet-specific background */}
       <div 
         className={`absolute inset-0 w-full h-full bg-gradient-to-b ${bgGradientClasses} game-background-debug pet-bg-${petType}`}
-        onClick={handleJump}
-        onTouchStart={handleTouchStart}
+        onClick={gameOver ? undefined : handleJump}
+        onTouchStart={gameOver ? undefined : handleTouchStart}
         style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}}
       >
         {/* Game elements - moved to a container to preserve background visibility */}

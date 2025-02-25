@@ -2,7 +2,7 @@
 
 import { TailwindColor } from '~/utils/tailwind-utils';
 
-export type PetType = 'bird' | 'turtle' | 'rabbit' | 'panda';
+export type PetType = 'bird' | 'turtle' | 'rabbit' | 'panda' | 'frog' | 'snail';
 
 // Interface representing a pet
 export interface Pet {
@@ -45,6 +45,32 @@ export const PETS: Pet[] = [
     backgroundColor: {
       from: 'blue-400',
       to: 'sky-200'
+    }
+  },
+  {
+    id: 'frog',
+    name: 'Jumpy',
+    description: 'A bouncy frog that leaps through the pipes!',
+    color: 'green-500',
+    pipeColor: 'yellow-400',
+    // imageUrl: not defined yet
+    scale: 1.1,
+    backgroundColor: {
+      from: 'green-400',
+      to: 'lime-100'
+    }
+  },
+  {
+    id: 'snail',
+    name: 'Slowy',
+    description: 'A determined snail who keeps a steady pace.',
+    color: 'amber-300',
+    pipeColor: 'amber-600',
+    // imageUrl: not defined yet
+    scale: 1.0,
+    backgroundColor: {
+      from: 'amber-200',
+      to: 'orange-50'
     }
   },
   {

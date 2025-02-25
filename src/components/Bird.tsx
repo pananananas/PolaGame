@@ -63,6 +63,20 @@ export const Bird: React.FC<BirdProps> = ({
       wingColor: "bg-green-700", // Darker green for shell
       animationClass: "animate-pulse",
     },
+    frog: {
+      color: "bg-green-500", // Bright green for the frog body
+      eyeColor: "bg-white",
+      beakColor: "bg-red-400", // Red tongue
+      wingColor: "bg-green-600", // Dark green spots
+      animationClass: "animate-bounce",
+    },
+    snail: {
+      color: "bg-amber-300", // Amber for the snail body
+      eyeColor: "bg-black",
+      beakColor: "bg-amber-800", // Dark amber for mouth
+      wingColor: "bg-amber-600", // Darker amber for shell
+      animationClass: "animate-pulse",
+    },
     rabbit: {
       color: "bg-pink-200",
       eyeColor: "bg-black",
@@ -159,9 +173,6 @@ export const Bird: React.FC<BirdProps> = ({
           )}
 
           {/* Beak/nose */}
-          <div
-            className={`absolute left-7 top-4 h-2 w-3 ${style.beakColor} rounded-r-full`}
-          ></div>
 
           {/* Wing/tail/feature */}
 
@@ -169,7 +180,9 @@ export const Bird: React.FC<BirdProps> = ({
           {petType === "turtle" && (
             <>
               {/* Enhanced shell pattern with hexagonal pattern */}
-
+              <div
+                className={`absolute left-7 top-4 h-2 w-3 ${style.beakColor} rounded-r-full`}
+              ></div>
               {/* Turtle head */}
               <div className="absolute -left-1 top-3 h-4 w-3 rounded-l-full bg-green-400"></div>
 
@@ -188,6 +201,55 @@ export const Bird: React.FC<BirdProps> = ({
               {/* Right eye */}
               <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-white"></div>
               <div className="absolute right-2 top-2 h-1 w-1 rounded-full bg-black"></div>
+            </>
+          )}
+          {petType === "frog" && (
+            <>
+              {/* Frog eyes - bulging on top */}
+              <div className="absolute -top-1 left-1 h-3 w-3 rounded-full border border-green-600 bg-green-400"></div>
+              <div className="absolute -top-1 left-1 h-2 w-2 rounded-full bg-white"></div>
+              <div className="absolute -top-1 left-1 h-1 w-1 rounded-full bg-black"></div>
+
+              <div className="absolute -top-1 right-1 h-3 w-3 rounded-full border border-green-600 bg-green-400"></div>
+              <div className="absolute -top-1 right-1 h-2 w-2 rounded-full bg-white"></div>
+              <div className="absolute -top-1 right-1 h-1 w-1 rounded-full bg-black"></div>
+
+              {/* Frog mouth line */}
+              <div className="absolute bottom-2 left-1 h-0.5 w-8 bg-green-700"></div>
+
+              {/* Frog spots */}
+              <div className="absolute left-1 top-3 h-2 w-2 rounded-full bg-green-600"></div>
+              <div className="absolute right-2 top-3 h-2 w-2 rounded-full bg-green-600"></div>
+              <div className="absolute left-3 top-5 h-1.5 w-1.5 rounded-full bg-green-600"></div>
+
+              <div className={`absolute left-7 top-7 h-1 w-3 ${style.beakColor} rounded-full`}></div>
+              {/* Tongue (occasionally visible) - positioned lower */}
+              {/* {Math.random() > 0.7 && (
+                <div className="absolute bottom-1 left-7 h-1 w-4 rounded-r-full bg-red-400"></div>
+                )} */}
+            </>
+          )}
+          {petType === "snail" && (
+            <>
+              {/* Snail head/body extending from shell */}
+              {/* <div className="absolute -left-1 top-3 h-4 w-4 rounded-l-full bg-amber-300"></div> */}
+
+              {/* Snail eyestalks - repositioned to face right */}
+              <div className="absolute -top-1 right-0 h-6 w-1 rounded-t-full bg-amber-300"></div>
+              <div className="absolute -top-1 right-0 h-1 w-1 rounded-full bg-black"></div>
+
+              <div className="absolute -top-1 right-2 h-4 w-1 rounded-full bg-amber-300"></div>
+              <div className="absolute -top-1 right-2 h-1 w-1 rounded-full bg-black"></div>
+
+              {/* Snail trail (subtle) */}
+              <div className="absolute -left-2 bottom-0 h-3 w-8 rounded-full bg-amber-300"></div>
+              
+              <div className={`absolute left-8 top-5 h-1 w-3 ${style.beakColor} rounded-full`}></div>
+
+              {/* Snail shell */}
+              <div className="absolute left-0 top-0 h-8 w-8 rounded-full border-2 border-amber-800 bg-amber-600"></div>
+              <div className="absolute left-1 top-1 h-6 w-6 rounded-full border border-amber-700"></div>
+              <div className="absolute left-2 top-2 h-4 w-4 rounded-full border border-amber-700"></div>
             </>
           )}
           {petType === "rabbit" && (
