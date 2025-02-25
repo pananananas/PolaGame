@@ -16,7 +16,7 @@ const BASE_PIPE_GAP = 200;
 const BASE_PIPE_SPEED = 4;
 const SPEED_INCREASE_RATE = 0.1;
 const BASE_MAX_PIPE_SPEED = 8;
-const SPECIAL_SCORE_THRESHOLD = 10;
+const SPECIAL_SCORE_THRESHOLD = 25;
 const INITIAL_PIPE_DISTANCE = 800; // Base distance for the first pipe
 const TAP_COOLDOWN = 200;          // Cooldown between taps in milliseconds to prevent double taps
 
@@ -188,8 +188,10 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
   const endGame = useCallback(() => {
     // Update refs - BUT KEEP THE PIPES
     gameOverRef.current = true;
+    gameStartedRef.current = false; // Explicitly set game as not started when ending
     
     // Update React state
+    setGameStarted(false); // Update React state to match ref
     setGameOver(true);
     
     // Stop animation and intervals
@@ -261,7 +263,7 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
             
             // Show congratulations message when reaching the threshold using Sonner toast
             if (scoreRef.current === SPECIAL_SCORE_THRESHOLD) {
-              toast.success('Congratulations!', {
+              toast.success('YOOOOOO czeka na Ciebie nagroda :>', {
                 // description: `You reached ${SPECIAL_SCORE_THRESHOLD} points! Keep going!`,
                 icon: '🎉',
                 duration: 4000,
@@ -349,12 +351,15 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
     // Update the last tap time
     lastTapTimeRef.current = now;
     
+    // If game is over, don't allow jumps, even for starting a new game
+    if (gameOverRef.current) return;
+    
     if (!gameStartedRef.current) {
       startGame();
       return;
     }
     
-    if (gameOverRef.current || isPausedRef.current) return;
+    if (isPausedRef.current) return;
     
     // Directly update velocity ref with screen-size adjusted jump force
     birdVelRef.current = jumpForce;

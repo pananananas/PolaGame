@@ -1,4 +1,11 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
 
 interface GameOverModalProps {
@@ -11,69 +18,86 @@ interface GameOverModalProps {
   onBackToMenu: () => void;
 }
 
-export const GameOverModal = ({ 
-  isOpen, 
-  score, 
-  highScore, 
+export const GameOverModal = ({
+  isOpen,
+  score,
+  highScore,
   goalReached = false,
-  goalScore = 10,
+  goalScore = 25,
   onRetry,
-  onBackToMenu
+  onBackToMenu,
 }: GameOverModalProps) => {
   return (
     <Dialog open={isOpen}>
-      <DialogContent className={`${goalReached ? 'bg-purple-100 border-purple-300' : 'bg-pink-100 border-pink-300'} border-2 rounded-lg max-w-md mx-auto`}>
+      <DialogContent
+        className={`${goalReached ? "border-purple-300 bg-purple-100" : "border-pink-300 bg-pink-100"} mx-auto max-w-md rounded-lg border-2`}
+      >
         <DialogHeader>
-          <DialogTitle className={`text-3xl font-bold ${goalReached ? 'text-purple-600' : 'text-pink-600'} text-center`}>
-            {goalReached ? 'Congratulations!!! 🎉' : 'Game Over!'}
+          <DialogTitle
+            className={`text-3xl font-bold ${goalReached ? "text-purple-600" : "text-pink-600"} text-center`}
+          >
+            {goalReached ? "Congratulationes! 🎉" : "Game Over!"}
           </DialogTitle>
           <DialogDescription className="text-center text-lg text-gray-700">
-            {goalReached 
-              ? `You reached the goal of ${goalScore} points!` 
-              : 'Oops! Your bird crashed.'}
+            {goalReached
+              ? `Osiągnęłaś cel ${goalScore} punktów!`
+              : "Oops! Twój ptasiuk spadł :c"}
           </DialogDescription>
         </DialogHeader>
-        
-        <div className="py-4 space-y-4">
-          <div className={`${goalReached ? 'bg-purple-50' : 'bg-white'} p-4 rounded-lg shadow-inner`}>
+
+        <div className="space-y-4 py-4">
+          <div
+            className={`${goalReached ? "bg-purple-50" : "bg-white"} rounded-lg p-4 shadow-inner`}
+          >
             <p className="text-center text-xl font-medium text-gray-800">
-              Your Score: <span className={`${goalReached ? 'text-purple-600' : 'text-pink-600'} font-bold`}>{score}</span>
+              Your Score:{" "}
+              <span
+                className={`${goalReached ? "text-purple-600" : "text-pink-600"} font-bold`}
+              >
+                {score}
+              </span>
             </p>
             <p className="text-center text-lg font-medium text-gray-800">
-              High Score: <span className="text-purple-600 font-bold">{highScore}</span>
+              High Score:{" "}
+              <span className="font-bold text-purple-600">{highScore}</span>
             </p>
           </div>
-          
+
           {goalReached && (
-            <div className="text-center text-purple-700 font-medium p-2 bg-purple-50 rounded-lg">
-              You've mastered the game and reached the special goal!
-              <div className="text-4xl my-2">🏆</div>
+            <div className="rounded-lg bg-purple-50 p-2 text-center font-medium text-purple-400">
+              A nagrodą jest{" "}
+              <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text font-bold text-transparent">
+                wałczer{" "}
+              </span>{" "}
+              na obiedek w wybranym lokalu!!!
+              <div className="my-2 text-4xl">🏆</div>
             </div>
           )}
-          
-          <p className="text-center text-gray-700 italic">
-            {score > highScore 
-              ? "Awesome! You set a new high score!" 
-              : goalReached ? "Amazing achievement!" : "Can you beat your high score?"}
+
+          <p className="text-center italic text-gray-700">
+            {score > highScore
+              ? "WOW! Nowy rekord!"
+              : goalReached
+                ? ""
+                : "Czy uda Ci się poprawić swój wynik?"}
           </p>
         </div>
-        
-        <DialogFooter className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button 
-            className=" text-white bg-gray-400 font-bold py-2 px-8 rounded-full shadow-md"
-            onClick={onBackToMenu}
-          >
-            Back to Menu
-          </Button>
-          <Button 
-            className={`bg-gradient-to-r ${goalReached ? 'from-purple-400 to-indigo-400 hover:from-purple-500 hover:to-indigo-500' : 'from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500'} text-white font-bold py-2 px-8 rounded-full shadow-md`}
+
+        <DialogFooter className="flex flex-col justify-center gap-3 sm:flex-row">
+          <Button
+            className={`bg-gradient-to-r ${goalReached ? "from-purple-400 to-indigo-400 hover:from-purple-500 hover:to-indigo-500" : "from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500"} rounded-full px-8 py-2 font-bold text-white shadow-md`}
             onClick={onRetry}
           >
-            Play Again
+            Zagraj ponownie
           </Button>
-          
+          <Button
+            className="rounded-full bg-gray-400 px-8 py-2 font-bold text-white shadow-md"
+            onClick={onBackToMenu}
+          >
+            Wróć do menu
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-}; 
+};

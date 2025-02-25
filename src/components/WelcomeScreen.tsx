@@ -68,9 +68,15 @@ export const WelcomeScreen = ({ onStart, highScore }: WelcomeScreenProps) => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-200 to-purple-200 p-4">
       <div className="mx-auto max-w-md space-y-6 rounded-2xl bg-white bg-opacity-90 p-6 text-center shadow-xl">
-        <h1 className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-4xl font-extrabold text-transparent">
-          {selectedPet?.name || "Floppy Bird"}
-        </h1>
+        <h1 className="text-2xl font-extrabold">
+          <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+            Witaj urodzinowej gierce!
+          </span>{" "}
+        </h1> 
+        <h3 className="text-md font-extrabold">
+          Wybierz sobie ptasiuka i leć!
+        </h3>
+
 
         <div className="relative py-4">
           {/* Pet selector using Shadcn Carousel */}
@@ -82,6 +88,9 @@ export const WelcomeScreen = ({ onStart, highScore }: WelcomeScreenProps) => {
             className="mx-auto w-full max-w-xs"
             setApi={setCarouselApi}
           >
+            <h3 className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-lg font-extrabold text-transparent">
+              {selectedPet?.name || "Floppy Bird"}
+            </h3>
             <CarouselContent>
               {PETS.map((pet) => (
                 <CarouselItem
@@ -90,7 +99,6 @@ export const WelcomeScreen = ({ onStart, highScore }: WelcomeScreenProps) => {
                 >
                   <div className="p-1">
                     <div className="flex h-28 items-center justify-center">
-                      {/* Display pet with new props */}
                       <Bird
                         position={10}
                         petType={pet.id}
@@ -107,47 +115,11 @@ export const WelcomeScreen = ({ onStart, highScore }: WelcomeScreenProps) => {
             <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2" />
           </Carousel>
 
-          {/* <p className="mb-1 mt-4 text-xs text-gray-500">Swipe to change pet</p> */}
-
-          {/* Pet selector dots */}
-          <div className="mt-2 flex justify-center space-x-2">
-            {PETS.map((pet, index) => {
-              const dotColorClass =
-                index === selectedPetIndex
-                  ? getBgColorClass(selectedPet?.color || "yellow-200")
-                  : "bg-gray-300";
-
-              return (
-                <span
-                  key={pet.id}
-                  className={`h-2 w-2 rounded-full ${dotColorClass} cursor-pointer`}
-                  onClick={() => {
-                    carouselApi?.scrollTo(index);
-                  }}
-                />
-              );
-            })}
-          </div>
-
           {highScore > 0 && (
             <p className="mt-6 text-sm font-medium text-purple-600">
               Your High Score: <span className="font-bold">{highScore}</span>
             </p>
           )}
-        </div>
-
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-gray-500">Game Controls:</p>
-          <div className="flex justify-center text-xs text-gray-600">
-            <div className="flex flex-row items-center gap-2">
-              <span className="rounded-md bg-gray-200 px-3 py-1 font-mono">
-                SPACE
-              </span>
-              <span>or</span>
-              <span className="rounded-md bg-gray-200 px-3 py-1">TAP</span>
-              <span>to flap wings</span>
-            </div>
-          </div>
         </div>
 
         <Button
