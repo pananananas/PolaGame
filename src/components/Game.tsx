@@ -18,9 +18,11 @@ const SPEED_INCREASE_RATE = 0.1;
 const BASE_MAX_PIPE_SPEED = 8;
 const SPECIAL_SCORE_THRESHOLD = 10;
 const INITIAL_PIPE_DISTANCE = 800; // Base distance for the first pipe
+const TAP_COOLDOWN = 200;          // Cooldown between taps in milliseconds to prevent double taps
 
 // Bird hitbox adjustment (smaller values = smaller hitbox)
-const BIRD_HITBOX_SIZE = 15;
+const BIRD_HITBOX_SIZE_DESKTOP = 15;
+const BIRD_HITBOX_SIZE_MOBILE = 10; // Smaller hitbox for mobile
 // Pipe hitbox margin for rounded corners
 const PIPE_HITBOX_MARGIN = 5;
 
@@ -48,6 +50,7 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
   
   // Screen size adaptive values
   const [screenWidth, setScreenWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  const [screenHeight, setScreenHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 800);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   
   // Responsive game constants
@@ -58,6 +61,8 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
   const baseSpeed = isMobile ? BASE_PIPE_SPEED * 0.85 : BASE_PIPE_SPEED; // Slower on mobile
   const maxSpeed = isMobile ? BASE_MAX_PIPE_SPEED * 0.8 : BASE_MAX_PIPE_SPEED;
   const initialPipeDistance = isMobile ? INITIAL_PIPE_DISTANCE * 0.8 : INITIAL_PIPE_DISTANCE;
+  // Set bird hitbox size based on device type
+  const birdHitboxSize = isMobile ? BIRD_HITBOX_SIZE_MOBILE : BIRD_HITBOX_SIZE_DESKTOP;
   
   // Game state
   const [gameStarted, setGameStarted] = useState(false);
@@ -77,6 +82,7 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
   const frameRef = useRef<number | null>(null);
   const pipeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const scoreRef = useRef(0);
+  const lastTapTimeRef = useRef(0); // Track the last tap time for debouncing
   
   // Game logic refs (these bypass React's rendering cycle for smoother animation)
   const birdPosRef = useRef(300);
@@ -92,7 +98,9 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
+      const height = window.innerHeight;
       setScreenWidth(width);
+      setScreenHeight(height);
       setIsMobile(width < 768);
     };
     
@@ -138,15 +146,43 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
     const height = gameAreaRef.current.clientHeight;
     const width = screenWidth;
     
-    // Make the pipe gaps easier on mobile (higher minimum)
-    const minTopHeight = isMobile ? 80 : 50;
-    const maxTopHeight = height - pipeGap - (isMobile ? 80 : 50);
+    // For mobile, ensure the pipe gap is never in the bottom 1/3 of the screen
+    let minTopHeight, maxTopHeight;
+    
+    if (isMobile) {
+      // Calculate bottom 1/3 boundary
+      const bottomThird = height * (2/3);
+      
+      // Ensure the top of the bottom pipe is above the bottom 1/3 of the screen
+      minTopHeight = 80; // Minimum safe distance from top
+      
+      // Calculate maximum top height to ensure bottom pipe starts above bottom third
+      // This means the gap (where bird flies through) ends before the bottom 1/3 starts
+      maxTopHeight = Math.floor(bottomThird - pipeGap - 40); // Extra margin to be safe
+      
+      // Log to debug pipe positions
+      console.log(`Creating pipe - screen height: ${height}, bottom third boundary: ${bottomThird}, max top pipe height: ${maxTopHeight}`);
+    } else {
+      minTopHeight = 50;
+      maxTopHeight = height - pipeGap - 50;
+    }
+    
+    // Ensure maxTopHeight is never less than minTopHeight
+    maxTopHeight = Math.max(maxTopHeight, minTopHeight + 10);
+    
     const topHeight = Math.floor(Math.random() * (maxTopHeight - minTopHeight)) + minTopHeight;
+    
+    // Verify the pipe gap position doesn't extend into bottom third
+    if (isMobile) {
+      const bottomPipeTop = topHeight + pipeGap;
+      const bottomThird = height * (2/3);
+      console.log(`Pipe gap check - bottom pipe starts at: ${bottomPipeTop}, bottom third boundary: ${bottomThird}`);
+    }
     
     // Add pipe to our mutable ref
     const newPipe = { x: width, topHeight };
     pipesRef.current = [...pipesRef.current, newPipe];
-  }, [screenWidth, pipeGap, isMobile]);
+  }, [screenWidth, pipeGap, isMobile, screenHeight]);
   
   // End game - define before other functions that use it
   const endGame = useCallback(() => {
@@ -264,16 +300,16 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
             bottom: gameAreaRef.current.clientHeight
           };
           
-          // Check for collision
+          // Check for collision - use device-specific hitbox size
           const topCollision = circleRectangleCollision(
-            birdCenterX, birdCenterY, BIRD_HITBOX_SIZE,
+            birdCenterX, birdCenterY, birdHitboxSize,
             topPipeRect.left, topPipeRect.top, 
             topPipeRect.right - topPipeRect.left, 
             topPipeRect.bottom - topPipeRect.top
           );
           
           const bottomCollision = circleRectangleCollision(
-            birdCenterX, birdCenterY, BIRD_HITBOX_SIZE,
+            birdCenterX, birdCenterY, birdHitboxSize,
             bottomPipeRect.left, bottomPipeRect.top, 
             bottomPipeRect.right - bottomPipeRect.left, 
             bottomPipeRect.bottom - bottomPipeRect.top
@@ -298,10 +334,21 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
     if (!gameOverRef.current) {
       frameRef.current = requestAnimationFrame(gameLoop);
     }
-  }, [gravity, baseSpeed, maxSpeed, pipeWidth, pipeGap, endGame]);
+  }, [gravity, baseSpeed, maxSpeed, pipeWidth, pipeGap, endGame, birdHitboxSize]);
   
-  // Handle jump
+  // Handle jump with debounce to prevent double taps
   const handleJump = useCallback(() => {
+    const now = Date.now();
+    
+    // Check for tap cooldown to prevent double taps
+    if (now - lastTapTimeRef.current < TAP_COOLDOWN) {
+      // Too soon since last tap, ignore this tap
+      return;
+    }
+    
+    // Update the last tap time
+    lastTapTimeRef.current = now;
+    
     if (!gameStartedRef.current) {
       startGame();
       return;
@@ -330,6 +377,7 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
     gameStartedRef.current = true;
     gameOverRef.current = false;
     isPausedRef.current = false;
+    lastTapTimeRef.current = 0; // Reset the tap timer
     
     // Update UI state for bird position
     setBirdPosition(300);
@@ -347,7 +395,14 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
     }
     
     // Create the first pipe at a farther distance for better mobile experience
-    pipesRef.current = [{ x: initialPipeDistance, topHeight: Math.floor(Math.random() * (gameAreaRef.current?.clientHeight || 600 - pipeGap - 100)) + 50 }];
+    // For the first pipe, force it to be in a safe position for easier start
+    if (gameAreaRef.current) {
+      const height = gameAreaRef.current.clientHeight;
+      const safeTopHeight = Math.floor(height * 0.4); // Put gap in middle area of screen for first pipe
+      pipesRef.current = [{ x: initialPipeDistance, topHeight: safeTopHeight }];
+    } else {
+      pipesRef.current = [{ x: initialPipeDistance, topHeight: Math.floor(Math.random() * (300 - 100)) + 100 }];
+    }
     
     // Create additional pipes at regular intervals - adjusted for screen size
     const pipeInterval = isMobile ? 2200 : 1800; // More time between pipes on mobile

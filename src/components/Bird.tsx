@@ -56,10 +56,10 @@ export const Bird: React.FC<BirdProps> = ({
       animationClass: 'animate-bounce'
     },
     turtle: {
-      color: 'bg-green-300',
+      color: 'bg-green-400', // Slightly darker green for the body
       eyeColor: 'bg-black',
-      beakColor: 'bg-green-600', // turtle's nose
-      wingColor: 'bg-green-500', // shell
+      beakColor: 'bg-yellow-600', // More defined beak color
+      wingColor: 'bg-green-700', // Darker green for shell
       animationClass: 'animate-pulse'
     },
     rabbit: {
@@ -148,7 +148,28 @@ export const Bird: React.FC<BirdProps> = ({
           
           {/* Pet-specific additional details */}
           {petType === 'turtle' && (
-            <div className="absolute inset-1 border-2 border-green-600 rounded-full"></div> // Shell pattern
+            <>
+              {/* Enhanced shell pattern with hexagonal pattern */}
+              
+              {/* Turtle head */}
+              <div className="absolute -left-1 top-3 w-3 h-4 bg-green-400 rounded-l-full"></div>
+              
+              
+              {/* Turtle limbs */}
+              <div className="absolute bottom-0 left-0 w-2 h-3 bg-green-500 rounded-b-full"></div>
+              <div className="absolute bottom-0 right-0 w-2 h-3 bg-green-500 rounded-b-full"></div>
+              <div className="absolute top-6 left-0 w-2 h-3 bg-green-500 rounded-b-full"></div>
+              <div className="absolute top-6 right-0 w-2 h-3 bg-green-500 rounded-b-full"></div>
+
+              <div className="absolute inset-1 border-2 border-green-700 rounded-full bg-green-600"></div>
+              
+              {/* Shell pattern details */}
+              <div className="absolute inset-2 border border-green-800 rounded-full opacity-80"></div>
+              <div className="absolute inset-3 border border-green-900 rounded-full opacity-70"></div>
+              
+              {/* Right eye */}
+              <div className="absolute top-2 right-2 w-2 h-2 bg-black rounded-full"></div>
+            </>
           )}
           {petType === 'rabbit' && (
             <div className="absolute -top-4 left-1 h-6 w-2 bg-pink-200 rounded-t-full"></div> // Ears

@@ -20,6 +20,7 @@ export function getAllColorClasses() {
     bg-green-400 bg-blue-400 bg-orange-400 bg-purple-400
     
     bg-green-500 bg-blue-500 bg-purple-500 bg-green-600
+    bg-green-700 bg-green-800 bg-green-900 bg-yellow-600
     
     from-blue-200 to-purple-200
     from-teal-100 to-blue-200

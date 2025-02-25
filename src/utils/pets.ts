@@ -22,29 +22,29 @@ export interface Pet {
 // Array of available pets
 export const PETS: Pet[] = [
   {
-    id: 'bird',
-    name: 'Flappy',
-    description: 'The classic yellow bird that started it all!',
-    color: 'yellow-200',
-    pipeColor: 'green-500',
-    imageUrl: 'https://utfs.io/f/aslkQcPvYvFBZGQY34IXhyp2SfGMEPRm8rk0zDgWI4Fa1UxK',
-    scale: 2, // Slightly larger scale
-    backgroundColor: {
-      from: 'blue-400',
-      to: 'sky-200'
-    }
-  },
-  {
     id: 'turtle',
     name: 'Shelly',
     description: 'A cute turtle that glides through pipes with ease.',
     color: 'green-300',
     pipeColor: 'blue-500',
     // imageUrl: 'https://utfs.io/f/1f7de49c-d5bc-49a0-a481-6945f2e7d8b6-6j9e7s.png',
-    scale: 1.0, // Default scale
+    scale: 1.2,
     backgroundColor: {
       from: 'teal-300',
       to: 'cyan-100'
+    }
+  },
+  {
+    id: 'bird',
+    name: 'Flappy',
+    description: 'The classic yellow bird that started it all!',
+    color: 'yellow-200',
+    pipeColor: 'green-500',
+    imageUrl: 'https://utfs.io/f/aslkQcPvYvFBZGQY34IXhyp2SfGMEPRm8rk0zDgWI4Fa1UxK',
+    scale: 2,
+    backgroundColor: {
+      from: 'blue-400',
+      to: 'sky-200'
     }
   },
   {
@@ -75,7 +75,7 @@ export const PETS: Pet[] = [
   }
 ];
 
-export const DEFAULT_PET: PetType = 'bird';
+export const DEFAULT_PET: PetType = 'turtle';
 
 // Function to get a pet by its ID
 export function getPetById(id: PetType): Pet {
