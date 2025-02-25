@@ -32,7 +32,7 @@ export default function RootLayout({
               fontSize: '1rem',
             },
             duration: 3000,
-            className: 'game-toast h-16',
+            className: 'game-toast h-10',
             descriptionClassName: 'text-gray-600 mt-1',
           }}
         />
