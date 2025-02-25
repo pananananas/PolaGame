@@ -205,14 +205,19 @@ export const Game = ({ petType = 'bird', onBackToMenu }: GameProps) => {
       pipeIntervalRef.current = null;
     }
     
-    // Update high score
+    // Update high score - only if current score is higher
     if (scoreRef.current > highScore) {
-      setHighScore(scoreRef.current);
+      // Update in a way that won't cause remounting during modal display
+      const newHighScore = scoreRef.current;
+      setHighScore(newHighScore);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('flappyHighScore', String(scoreRef.current));
+        // Save to localStorage without causing a re-render
+        setTimeout(() => {
+          localStorage.setItem('flappyHighScore', String(newHighScore));
+        }, 0);
       }
     }
-  }, [highScore]);
+  }, []); // Remove highScore from dependencies to avoid recreation on score changes
   
   // Game loop - defined before it's used
   const gameLoop = useCallback((timestamp: number) => {
